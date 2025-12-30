@@ -15,17 +15,17 @@
 
     <div class="d-flex gap-2">
 
-        <!-- SHARE BUTTON (OS SHARE UI) -->
+        <!-- SHARE BUTTON -->
         <button class="btn btn-outline-dark fw-semibold"
                 type="button"
                 onclick="shareImage()">
             Share QR Code
         </button>
 
-        <!-- COPY + OPEN WHATSAPP -->
+        <!-- COPY IMAGE + OPEN WHATSAPP WEB CHAT -->
         <button class="btn btn-outline-primary fw-semibold"
                 type="button"
-                onclick="copyImageAndOpenWhatsApp()">
+                onclick="copyImageAndOpenChat()">
             Copy Image
         </button>
 
@@ -47,14 +47,14 @@
                     text: "Here's the QR code image"
                 });
             } else {
-                alert("Sharing not supported on this browser.");
+                alert("Sharing not supported.");
             }
         }
 
-        /* -----------------------------------------
-           COPY IMAGE + AUTO OPEN WHATSAPP WEB
-        ------------------------------------------ */
-        async function copyImageAndOpenWhatsApp() {
+        /* ---------------------------------------------
+           COPY IMAGE + OPEN WHATSAPP WEB (BROWSER ONLY)
+        ---------------------------------------------- */
+        async function copyImageAndOpenChat() {
             try {
                 const response = await fetch("./images/qrcode.png");
                 const blob = await response.blob();
@@ -66,12 +66,16 @@
                     })
                 ]);
 
-                // Open WhatsApp Web in new tab
-                window.open("https://web.whatsapp.com/", "_blank");
+                // FORCE WhatsApp WEB (not app)
+                const phoneNumber = "919100728556";
+                const whatsappWebUrl =
+                    `https://web.whatsapp.com/send?phone=${phoneNumber}`;
+
+                window.open(whatsappWebUrl, "_blank");
 
             } catch (err) {
-                console.error("Error:", err);
-                alert("Copy failed. Page must be HTTPS & permissions allowed.");
+                console.error(err);
+                alert("Copy failed. HTTPS & permissions required.");
             }
         }
     </script>
