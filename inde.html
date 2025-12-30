@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Share</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          crossorigin="anonymous">
+</head>
+
+<body class="p-4">
+
+    <p class="mb-3">Hello world</p>
+
+    <div class="d-flex gap-2">
+
+        <!-- SHARE BUTTON (OS SHARE UI) -->
+        <button class="btn btn-outline-dark fw-semibold"
+                type="button"
+                onclick="shareImage()">
+            Share QR Code
+        </button>
+
+        <!-- COPY + OPEN WHATSAPP -->
+        <button class="btn btn-outline-primary fw-semibold"
+                type="button"
+                onclick="copyImageAndOpenWhatsApp()">
+            Copy Image
+        </button>
+
+    </div>
+
+    <script>
+        /* -----------------------------
+           SHARE IMAGE (OS SHARE UI)
+        ------------------------------ */
+        async function shareImage() {
+            const response = await fetch("./images/qrcode.png");
+            const blob = await response.blob();
+            const file = new File([blob], "qrcode.png", { type: "image/png" });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    files: [file],
+                    title: "QR Code",
+                    text: "Here's the QR code image"
+                });
+            } else {
+                alert("Sharing not supported on this browser.");
+            }
+        }
+
+        /* -----------------------------------------
+           COPY IMAGE + AUTO OPEN WHATSAPP WEB
+        ------------------------------------------ */
+        async function copyImageAndOpenWhatsApp() {
+            try {
+                const response = await fetch("./images/qrcode.png");
+                const blob = await response.blob();
+
+                // Copy REAL image to clipboard
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        "image/png": blob
+                    })
+                ]);
+
+                // Open WhatsApp Web in new tab
+                window.open("https://web.whatsapp.com/", "_blank");
+
+            } catch (err) {
+                console.error("Error:", err);
+                alert("Copy failed. Page must be HTTPS & permissions allowed.");
+            }
+        }
+    </script>
+
+</body>
+</html>
